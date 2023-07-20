@@ -7,12 +7,12 @@ int imgindex = 0;
 
 int main()
 {
-    std::string image_path = "./";  // 사진 파일들이 있는 경로로 변경해야 합니다.
+    std::string image_path = "./";  
     std::string image_extension = ".png";
 
     std::vector<std::string> image_files;
 
-    // 사진 파일들의 리스트 생성
+ 
     for (const auto& entry : std::filesystem::directory_iterator(image_path))
     {
         if (entry.path().extension() == image_extension)
@@ -28,24 +28,24 @@ int main()
         cv::Mat image_gray;
         cv::cvtColor(RGBimage, image_gray, cv::COLOR_BGR2GRAY);
 
-        // 이진화를 위한 쓰레시홀드 함수 적용
+
         cv::Mat binary_image;
         cv::threshold(image_gray, binary_image, 50, 255, cv::THRESH_BINARY);
 
-        // 모폴로지 연산을 사용하여 노이즈 제거
+   
         cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5));
         cv::Mat opening;
         cv::morphologyEx(binary_image, opening, cv::MORPH_OPEN, kernel);
 
-        // 컨투어 찾기
+ 
         std::vector<std::vector<cv::Point>> contours;
         cv::findContours(opening, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-        // 컨투어 그리기
+
         cv::Mat contour_image = RGBimage.clone();
         cv::drawContours(contour_image, contours, -1, cv::Scalar(0, 255, 0), 2);
 
-        // 가장 큰 컨투어의 넓이 계산
+  
         double max_area = 0;
         int max_contour_index = 0;
         for (int i = 0; i < contours.size(); i++)
@@ -61,7 +61,7 @@ int main()
 
         double total_contour_area = 0;
         int index = 0;
-        // 컨투어의 인덱스 출력
+
         for (int i = 0; i < contours.size(); i++)
         {
             
@@ -71,7 +71,7 @@ int main()
                 index = index + 1;
                 total_contour_area += contour_area;
 
-                // 컨투어 중앙 좌표 계산
+         
                 cv::Moments M = cv::moments(contours[i]);
                 double cX = 0, cY = 0;
                 if (M.m00 != 0)
